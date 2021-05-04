@@ -6,6 +6,8 @@ export default function Controls(props) {
 
 	let playButton = useRef();
 	let currentTime = useRef();
+	let volumen = useRef();
+	let loopButton = useRef();
 
 	setInterval(() => {
 		currentTime.current.value = audio.current.currentTime;
@@ -33,6 +35,32 @@ export default function Controls(props) {
 		audio.current.currentTime = currentTime.current.value;
 	}
 
+	function suvirVolumen() {
+		if (audio.current.volume < 1) {
+			audio.current.volume += 0.1;
+		}
+		volumen.current.innerHTML =
+			Math.floor(audio.current.volume * 100) + " %";
+	}
+
+	function bajarVolumen() {
+		if (audio.current.volume > 0) {
+			audio.current.volume -= 0.1;
+		}
+		volumen.current.innerHTML =
+			Math.floor(audio.current.volume * 100) + " %";
+	}
+
+	function loop() {
+		if (audio.current.loop) {
+			audio.current.loop = false;
+			loopButton.current.className = "";
+		} else {
+			audio.current.loop = true;
+			loopButton.current.className = "text-primary";
+		}
+	}
+
 	return (
 		<>
 			<div className="row justify-content-center align-items-center mt-3">
@@ -46,7 +74,17 @@ export default function Controls(props) {
 									props.cancionActual.url
 								}
 							/>
-							<div className="row p-2">
+							<div className="row align-items-center p-4">
+								<div className="col-2">
+									<div className="row align-items-center">
+										<div ref={loopButton} onClick={loop}>
+											<i className="fas fa-redo-alt"></i>
+										</div>
+										<div className="ml-3">
+											<i className="fas fa-random"></i>
+										</div>
+									</div>
+								</div>
 								<div className="col">
 									<div
 										onClick={() => {
@@ -68,6 +106,17 @@ export default function Controls(props) {
 											props.cancionSiguiente();
 										}}>
 										<i className="fas fa-2x fa-forward"></i>
+									</div>
+								</div>
+								<div className="col-2">
+									<div className="row justify-content-between align-items-center">
+										<div onClick={bajarVolumen}>
+											<i className="fas fa-volume-down"></i>
+										</div>
+										<div ref={volumen}>100 %</div>
+										<div onClick={suvirVolumen}>
+											<i className="fas fa-volume-up"></i>
+										</div>
 									</div>
 								</div>
 							</div>
