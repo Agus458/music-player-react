@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import SongList from "./SongList";
 
 export default function Player() {
 	const [songList, setSongList] = useState([
@@ -31,8 +32,10 @@ export default function Player() {
 	function play() {
 		if (audio.current.paused) {
 			audio.current.play();
+			playButton.current.className = "fas fa-2x fa-pause";
 		} else {
 			audio.current.pause();
+			playButton.current.className = "fas fa-2x fa-play";
 		}
 	}
 
@@ -41,6 +44,7 @@ export default function Player() {
 		audio.current.src =
 			"https://assets.breatheco.de/apis/sound/" + songList[pos].url;
 		audio.current.play();
+		playButton.current.className = "fas fa-2x fa-pause";
 	}
 
 	function siguiente() {
@@ -52,30 +56,28 @@ export default function Player() {
 		audio.current.src =
 			"https://assets.breatheco.de/apis/sound/" + songList[actual].url;
 		audio.current.play();
+		playButton.current.className = "fas fa-2x fa-pause";
+	}
+
+	function atras() {
+		if (actual === 0) {
+			setActual(songList.length - 1);
+		} else {
+			setActual(actual - 1);
+		}
+		audio.current.src =
+			"https://assets.breatheco.de/apis/sound/" + songList[actual].url;
+		audio.current.play();
+		playButton.current.className = "fas fa-2x fa-pause";
 	}
 
 	return (
 		<>
-			<div className="row justify-content-center align-items-center">
-				<div className="col-8">
-					<div className="list-group">
-						{songList.map((cancion, index) => {
-							return (
-								<button
-									key={index}
-									className={`list-group-item list-group-item-action + ${
-										index === actual ? "active" : ""
-									}`}
-									onClick={() => {
-										seleccionarCancion(index);
-									}}>
-									{cancion.name}
-								</button>
-							);
-						})}
-					</div>
-				</div>
-			</div>
+			<SongList
+				listaCanciones={songList}
+				alElegir={seleccionarCancion}
+				actual={actual}
+			/>
 			<div className="row justify-content-center align-items-center mt-3">
 				<div className="col-8">
 					<div className="card">
@@ -86,19 +88,31 @@ export default function Player() {
 							/>
 							<div className="row p-2">
 								<div className="col">
-									<div>
+									<div onClick={atras}>
 										<i className="fas fa-2x fa-backward"></i>
 									</div>
 								</div>
 								<div className="col">
-									<div onClick={play} ref={playButton}>
-										<i className="fas fa-2x fa-play"></i>
+									<div onClick={play}>
+										<i
+											ref={playButton}
+											className="fas fa-2x fa-play"></i>
 									</div>
 								</div>
 								<div className="col">
 									<div onClick={siguiente}>
 										<i className="fas fa-2x fa-forward"></i>
 									</div>
+								</div>
+							</div>
+							<div className="row mt-3">
+								<div className="col">
+									<input
+										type="range"
+										className="form-control-range"
+										id="formControlRange"
+										value="0"
+									/>
 								</div>
 							</div>
 						</div>
