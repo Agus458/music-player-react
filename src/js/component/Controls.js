@@ -8,6 +8,7 @@ export default function Controls(props) {
 	let currentTime = useRef();
 	let volumen = useRef();
 	let loopButton = useRef();
+	let randomButton = useRef();
 
 	setInterval(() => {
 		currentTime.current.value = audio.current.currentTime;
@@ -80,7 +81,18 @@ export default function Controls(props) {
 										<div ref={loopButton} onClick={loop}>
 											<i className="fas fa-redo-alt"></i>
 										</div>
-										<div className="ml-3">
+										<div
+											ref={randomButton}
+											className="ml-3"
+											onClick={() => {
+												if (props.desordenar()) {
+													randomButton.current.className =
+														"text-primary ml-3";
+												} else {
+													randomButton.current.className =
+														"ml-3";
+												}
+											}}>
 											<i className="fas fa-random"></i>
 										</div>
 									</div>
@@ -144,5 +156,6 @@ export default function Controls(props) {
 Controls.propTypes = {
 	cancionSiguiente: PropTypes.func,
 	cancionAnterior: PropTypes.func,
+	desordenar: PropTypes.func,
 	cancionActual: PropTypes.object
 };
