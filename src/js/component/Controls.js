@@ -5,7 +5,7 @@ export default function Controls(props) {
 	let audio = useRef();
 
 	let playButton = useRef();
-	let currentTime = useRef();
+	let range = useRef();
 	let volumen = useRef();
 	let loopButton = useRef();
 	let randomButton = useRef();
@@ -13,7 +13,7 @@ export default function Controls(props) {
 	const [duration, setDuration] = useState(100);
 
 	setInterval(() => {
-		currentTime.current.value = audio.current.currentTime;
+		range.current.value = audio.current.currentTime;
 		if (audio.current.currentTime == duration) {
 			props.cancionSiguiente();
 		}
@@ -35,10 +35,6 @@ export default function Controls(props) {
 			audio.current.pause();
 			playButton.current.className = "fas fa-2x fa-play";
 		}
-	}
-
-	function seleccionarDuracion() {
-		audio.current.currentTime = currentTime.current.value;
 	}
 
 	function suvirVolumen() {
@@ -144,12 +140,15 @@ export default function Controls(props) {
 									<div className="col">
 										<div className="form-group">
 											<input
-												ref={currentTime}
+												ref={range}
 												type="range"
 												className="form-control-range"
 												min="0"
 												max={duration}
-												onClick={seleccionarDuracion}
+												onChange={() => {
+													audio.current.currentTime =
+														range.current.value;
+												}}
 											/>
 										</div>
 									</div>
