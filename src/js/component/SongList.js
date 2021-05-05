@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 export default function SongList(props) {
 	return (
-		<>
+		<div id="lista" className="container mt-5">
 			<div className="row justify-content-center align-items-center">
-				<div className="col-8">
+				<div className="col">
 					<div className="list-group">
 						{props.listaCanciones.map((cancion, index) => {
 							return (
@@ -25,7 +25,7 @@ export default function SongList(props) {
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 

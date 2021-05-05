@@ -10,15 +10,20 @@ export default function Controls(props) {
 	let loopButton = useRef();
 	let randomButton = useRef();
 
+	const [duration, setDuration] = useState(100);
+
 	setInterval(() => {
 		currentTime.current.value = audio.current.currentTime;
-		currentTime.current.max = audio.current.duration;
-	}, 500);
+		if (audio.current.currentTime == duration) {
+			props.cancionSiguiente();
+		}
+	}, 1000);
 
 	useEffect(() => {
 		audio.current.onloadedmetadata = () => {
 			audio.current.play();
 			playButton.current.className = "fas fa-2x fa-pause";
+			setDuration(audio.current.duration);
 		};
 	}, []);
 
@@ -45,7 +50,7 @@ export default function Controls(props) {
 	}
 
 	function bajarVolumen() {
-		if (audio.current.volume > 0) {
+		if (Math.floor(audio.current.volume * 100) > 0) {
 			audio.current.volume -= 0.1;
 		}
 		volumen.current.innerHTML =
@@ -64,84 +69,89 @@ export default function Controls(props) {
 
 	return (
 		<>
-			<div className="row justify-content-center align-items-center mt-3">
-				<div className="col-8">
-					<div className="card">
-						<div className="card-body text-center">
-							<audio
-								ref={audio}
-								src={
-									"https://assets.breatheco.de/apis/sound/" +
-									props.cancionActual.url
-								}
-							/>
-							<div className="row align-items-center p-4">
-								<div className="col-2">
-									<div className="row align-items-center">
-										<div ref={loopButton} onClick={loop}>
-											<i className="fas fa-redo-alt"></i>
+			<div className="row justify-content-center align-items-center mt-5">
+				<div className="col">
+					<div className="container fixed-bottom">
+						<div className="card">
+							<div className="card-body text-center">
+								<audio
+									ref={audio}
+									src={
+										"https://assets.breatheco.de/apis/sound/" +
+										props.cancionActual.url
+									}
+								/>
+								<div className="row align-items-center p-4">
+									<div className="col-2">
+										<div className="row align-items-center">
+											<div
+												ref={loopButton}
+												onClick={loop}>
+												<i className="fas fa-redo-alt"></i>
+											</div>
+											<div
+												ref={randomButton}
+												className="ml-3"
+												onClick={() => {
+													if (props.desordenar()) {
+														randomButton.current.className =
+															"text-primary ml-3";
+													} else {
+														randomButton.current.className =
+															"ml-3";
+													}
+												}}>
+												<i className="fas fa-random"></i>
+											</div>
 										</div>
+									</div>
+									<div className="col">
 										<div
-											ref={randomButton}
-											className="ml-3"
 											onClick={() => {
-												if (props.desordenar()) {
-													randomButton.current.className =
-														"text-primary ml-3";
-												} else {
-													randomButton.current.className =
-														"ml-3";
-												}
+												props.cancionAnterior();
 											}}>
-											<i className="fas fa-random"></i>
+											<i className="fas fa-2x fa-backward"></i>
+										</div>
+									</div>
+									<div className="col">
+										<div onClick={play}>
+											<i
+												ref={playButton}
+												className="fas fa-2x fa-play"></i>
+										</div>
+									</div>
+									<div className="col">
+										<div
+											onClick={() => {
+												props.cancionSiguiente();
+											}}>
+											<i className="fas fa-2x fa-forward"></i>
+										</div>
+									</div>
+									<div className="col-2">
+										<div className="row justify-content-between align-items-center">
+											<div onClick={bajarVolumen}>
+												<i className="fas fa-volume-down"></i>
+											</div>
+											<div ref={volumen}>100 %</div>
+											<div onClick={suvirVolumen}>
+												<i className="fas fa-volume-up"></i>
+											</div>
 										</div>
 									</div>
 								</div>
-								<div className="col">
-									<div
-										onClick={() => {
-											props.cancionAnterior();
-										}}>
-										<i className="fas fa-2x fa-backward"></i>
-									</div>
-								</div>
-								<div className="col">
-									<div onClick={play}>
-										<i
-											ref={playButton}
-											className="fas fa-2x fa-play"></i>
-									</div>
-								</div>
-								<div className="col">
-									<div
-										onClick={() => {
-											props.cancionSiguiente();
-										}}>
-										<i className="fas fa-2x fa-forward"></i>
-									</div>
-								</div>
-								<div className="col-2">
-									<div className="row justify-content-between align-items-center">
-										<div onClick={bajarVolumen}>
-											<i className="fas fa-volume-down"></i>
+								<div className="row mt-3">
+									<div className="col">
+										<div className="form-group">
+											<input
+												ref={currentTime}
+												type="range"
+												className="form-control-range"
+												min="0"
+												max={duration}
+												onClick={seleccionarDuracion}
+											/>
 										</div>
-										<div ref={volumen}>100 %</div>
-										<div onClick={suvirVolumen}>
-											<i className="fas fa-volume-up"></i>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="row mt-3">
-								<div className="col">
-									<div className="form-group">
-										<input
-											ref={currentTime}
-											type="range"
-											className="form-control-range"
-											min="0"
-											onClick={seleccionarDuracion}
-										/>
 									</div>
 								</div>
 							</div>

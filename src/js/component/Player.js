@@ -1,28 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SongList from "./SongList";
 import Controls from "./Controls";
 
 export default function Player() {
-	const [songList, setSongList] = useState([
-		{
-			id: 1,
-			category: "game",
-			name: "Mario Castle",
-			url: "files/mario/songs/castle.mp3"
-		},
-		{
-			id: 2,
-			category: "game",
-			name: "Mario Star",
-			url: "files/mario/songs/hurry-starman.mp3"
-		},
-		{
-			id: 3,
-			category: "game",
-			name: "Mario Overworld",
-			url: "files/mario/songs/overworld.mp3"
+	const [songList, setSongList] = useState([]);
+
+	const cargarCanciones = async () => {
+		try {
+			let res = await fetch(
+				"https://assets.breatheco.de/apis/sound/songs"
+			);
+			let data = await res.json();
+			setSongList(data);
+		} catch (error) {
+			console.log(error);
 		}
-	]);
+	};
+
+	useEffect(() => {
+		cargarCanciones();
+	}, []);
 
 	const [actual, setActual] = useState(0);
 
@@ -77,6 +74,7 @@ export default function Player() {
 	const [ordenado, setOrdenado] = useState(true);
 
 	function shuffle() {
+		setActual(0);
 		if (ordenado) {
 			shuffleArray(songList);
 			setOrdenado(false);
@@ -89,17 +87,23 @@ export default function Player() {
 
 	return (
 		<>
-			<SongList
-				listaCanciones={songList}
-				alElegir={seleccionarCancion}
-				actual={actual}
-			/>
-			<Controls
-				cancionSiguiente={siguiente}
-				cancionAnterior={atras}
-				cancionActual={songList[actual]}
-				desordenar={shuffle}
-			/>
+			{songList.length > 0 ? (
+				<>
+					<SongList
+						listaCanciones={songList}
+						alElegir={seleccionarCancion}
+						actual={actual}
+					/>
+					<Controls
+						cancionSiguiente={siguiente}
+						cancionAnterior={atras}
+						cancionActual={songList[actual]}
+						desordenar={shuffle}
+					/>
+				</>
+			) : (
+				"No hay canciones"
+			)}
 		</>
 	);
 }

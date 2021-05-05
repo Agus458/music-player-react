@@ -1,12 +1,9 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
-#center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+body {
+    background: black;
 }
 
-body {
-    background: rgb(0, 0, 0);
+#lista {
+    margin-bottom: 220px;
 }
